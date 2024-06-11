@@ -1,0 +1,2 @@
+default_grafana_gpg_key_url: https://rpm.grafana.com/gpg.key
+#default_mysql_yum_repository_url: https://repo.mysql.com/mysql80-community-release-el9-5.noarch.rpm
