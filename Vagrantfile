@@ -30,8 +30,8 @@ Vagrant.configure("2") do |config|
   	override.vm.box = "dummy"
     override.ssh.username = "ec2-user"
     override.ssh.private_key_path = "~/.ssh/id_rsa"
-    aws.access_key_id             = `op read "op://Private/aws inqwise-stg/Security/Access key ID"`.strip!
-    aws.secret_access_key         = `op read "op://Private/aws inqwise-stg/Security/Secret access key"`.strip!
+    aws.access_key_id             = `op read "op://Employee/aws inqwise-stg/Security/Access key ID"`.strip!
+    aws.secret_access_key         = `op read "op://Employee/aws inqwise-stg/Security/Secret access key"`.strip!
     #aws.session_token             = ENV["VAGRANT_AWS_SESSION_TOKEN"]
     #aws.aws_dir = ENV['HOME'] + "/.aws/"
     aws.keypair_name = Etc.getpwuid(Process.uid).name
@@ -48,7 +48,7 @@ Vagrant.configure("2") do |config|
     aws.associate_public_ip = true
     aws.iam_instance_profile_name = "bootstrap-role"
     aws.tags = {
-      Name: 'grafana'
+      Name: 'grafana-test'
     }
   end
 end

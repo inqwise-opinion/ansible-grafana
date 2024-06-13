@@ -23,7 +23,7 @@ main () {
     pip install -r requirements.txt --user virtualenv --timeout 60
     export PATH=$PATH:~/.local/bin
     export ANSIBLE_ROLES_PATH="$(pwd)/ansible-galaxy/roles"
-    ansible-galaxy install -p roles -r requirements.yml
+    ansible-galaxy install -r requirements.yml
     ansible-playbook main.yml --syntax-check
     ansible-playbook --connection=local --inventory 127.0.0.1, --limit 127.0.0.1 main.yml
 }

@@ -1,32 +1,75 @@
 ---
 #s3://artifactory-opinion-stg/mimir-2.12.0_arm64.rpm
-- name: Simple GET operation
+
+- name: check RPM exist in local cache
+  stat:
+    path: "{{ disk.mount }}/mysql-yum-repository.rpm"
+  register: mimir_rpm_install
+  tags: installation
+
+- name: download mimir from s3
   amazon.aws.s3_object:
     bucket: artifactory-opinion-stg
     object: /mimir-2.12.0_arm64.rpm
-    dest: /tmp/mimir-2.12.0_arm64.rpm
+    dest: /tmp/mimir.rpm
     mode: get
+  when: mimir_rpm_install.stat.exists == False and (mysql_yum_repository_url | default(default_mysql_yum_repository_url)).startswith('s3')
   tags: installation
 
 # - name: download mimir RPM from http
 #   get_url:
-#     dest: "{{ disk.mount }}/mysql-yum-repository.rpm"
-#     url: "{{mysql_yum_repository_url | default(default_mysql_yum_repository_url)}}"
+#     dest: "/tmp/mimir-2.12.0_arm64.rpm"
+#     url: "https://github.com/grafana/mimir/releases/download/mimir-2.12.0/mimir-2.12.0_arm64.rpm"
 #     validate_certs: no
 #     force: no
 #   when: mysql_repository_install.stat.exists == False and (mysql_yum_repository_url | default(default_mysql_yum_repository_url)).startswith('http')
 #   tags: installation
-
-#https://github.com/grafana/mimir/releases/download/mimir-2.12.0/mimir-2.12.0_arm64.rpm
 
 # - name: download RPM from s3
 #   command: "aws s3 cp {{mysql_yum_repository_url | default(default_mysql_yum_repository_url)}} {{ disk.mount }}/mysql-yum-repository.rpm"
 #   when: mysql_repository_install.stat.exists == False and (mysql_yum_repository_url | default(default_mysql_yum_repository_url)).startswith('s3')
 #   tags: installation
 
+- name: Simple GET operation
+  amazon.aws.s3_object:
+    bucket: artifactory-opinion-stg
+    object: /mimir-2.12.0_arm64.rpm-sha-256
+    dest: "{{ mimir_sha256_rpm_package }}"
+    mode: get
+  tags: installation
+
+# - name: extract mimir-sha256 from file
+#   slurp:
+#     src: /tmp/mimir-sha256
+#   register: mimir_sha256_expected
+
+# - name: Calculate mimir SHA256 of the RPM package
+#   community.general.sha256sum:
+#     path: "{{ mimir_rpm_package }}"
+#   register: mimir_sha256_actual_output
+
+# - name: Calculate SHA256 hash of the RPM package
+#   command: sha256sum {{ mimir_rpm_package }}
+#   register: sha256_output
+
+# - name: Extract calculated SHA256 hash
+#   set_fact:
+#     calculated_sha256: "{{ sha256_output.stdout.split(' ')[0] }}"
+
+# - name: Fail if SHA256 hash does not match
+#   fail:
+#     msg: "SHA256 hash mismatch! Package may be corrupted or tampered with."
+#   when: mimir_sha256_actual_output.hexdigest != mimir_sha256_expected
+
 - name: install mimir Repository
   ansible.builtin.package:
-    name:
-      - "/tmp/mimir-2.12.0_arm64.rpm"
+    name: "{{ mimir_rpm_package }}"
     state: present
+    disable_gpg_check: yes
+  tags: installation
+
+- name: copy config template to mimir folder
+  template:
+    src: config.yml.j2
+    dest: "{{ config_remote_path }}"
   tags: installation

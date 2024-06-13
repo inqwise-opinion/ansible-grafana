@@ -2,3 +2,6 @@
 roles:
   - name: users
     src: robertdebock.users
+
+collections:
+  - name: community.general
