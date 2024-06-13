@@ -1,0 +1,32 @@
+---
+#s3://artifactory-opinion-stg/mimir-2.12.0_arm64.rpm
+- name: Simple GET operation
+  amazon.aws.s3_object:
+    bucket: artifactory-opinion-stg
+    object: /mimir-2.12.0_arm64.rpm
+    dest: /tmp/mimir-2.12.0_arm64.rpm
+    mode: get
+  tags: installation
+
+# - name: download mimir RPM from http
+#   get_url:
+#     dest: "{{ disk.mount }}/mysql-yum-repository.rpm"
+#     url: "{{mysql_yum_repository_url | default(default_mysql_yum_repository_url)}}"
+#     validate_certs: no
+#     force: no
+#   when: mysql_repository_install.stat.exists == False and (mysql_yum_repository_url | default(default_mysql_yum_repository_url)).startswith('http')
+#   tags: installation
+
+#https://github.com/grafana/mimir/releases/download/mimir-2.12.0/mimir-2.12.0_arm64.rpm
+
+# - name: download RPM from s3
+#   command: "aws s3 cp {{mysql_yum_repository_url | default(default_mysql_yum_repository_url)}} {{ disk.mount }}/mysql-yum-repository.rpm"
+#   when: mysql_repository_install.stat.exists == False and (mysql_yum_repository_url | default(default_mysql_yum_repository_url)).startswith('s3')
+#   tags: installation
+
+- name: install mimir Repository
+  ansible.builtin.package:
+    name:
+      - "/tmp/mimir-2.12.0_arm64.rpm"
+    state: present
+  tags: installation

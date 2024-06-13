@@ -1,28 +1,4 @@
 ---
-- name: Import grafana GPG public key
-  rpm_key:
-    key: "{{grafana_gpg_key_url | default(default_grafana_gpg_key_url)}}"
-    state: present
-  tags: installation
+- include_tasks: grafana.yml
 
-- name: copy grafana.repo
-  ansible.builtin.template:
-    src: grafana.repo.j2
-    dest: /etc/yum.repos.d/grafana.repo
-    owner: bin
-    group: wheel
-    mode: '0644'
-  tags: installation
-
-- name: install grafana
-  ansible.builtin.package:
-    name: grafana
-    state: present
-  tags: installation
-
-- name: Start and enable grafana
-  systemd:
-    name: grafana-server
-    state: started
-    enabled: yes
-  tags: configuration
+- include_tasks: mimir.yml
