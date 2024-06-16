@@ -19,7 +19,7 @@
 AWS_REGION = "il-central-1"
 Vagrant.configure("2") do |config|
   config.vm.provision "shell", inline: <<-SHELL
-    set -euxo pipefail
+    
     cd /vagrant
     aws s3 cp s3://resource-opinion-stg/get-pip.py - | python3
     echo $PWD
