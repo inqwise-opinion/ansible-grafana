@@ -9,10 +9,3 @@ echo "$VAULT_PASSWORD" > /tmp/ansible-mysql/secret
 bash main.sh -r $REGION
 rm /tmp/ansible-mysql/secret
 echo "End user data"
-
-# #!/usr/bin/env bash
-# set -euxo pipefail
-# echo "Start user data"
-# curl https://bootstrap.pypa.io/get-pip.py | python3
-# aws s3 cp s3://opinion-stg-bootstrap/playbooks/ansible-mysql/ /tmp/ansible-mysql --recursive && cd /tmp/ansible-mysql && bash main.sh
-# echo "End user data"

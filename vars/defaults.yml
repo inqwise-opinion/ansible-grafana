@@ -1,7 +1,7 @@
 ---
 discord_webhook: https://discord.com/api/webhooks/{{ discord_message_webhook_id }}/{{ discord_message_webhook_token }}
 discord_channel: "#notifications"
-public_dns: grafana
+#public_dns: grafana
 private_dns: grafana
 #public_domain: inqwise-stg.com
 private_domain: opinion-stg.local

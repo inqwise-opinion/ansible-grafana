@@ -9,7 +9,7 @@
   get_url:
     dest: "/tmp/{{ mimir_rpm_package }}"
     url: "{{ default_mimir_rpm_url }}"
-    checksum: sha256:{{ default_mimir_sha256_rpm_url }}
+    #checksum: sha256:{{ default_mimir_sha256_rpm_url }}
   when: mimir_rpm_install.stat.exists == False and (mimir_rpm_url | default(default_mimir_rpm_url)).startswith('http')
   tags: installation
 
@@ -17,7 +17,7 @@
   amazon.aws.s3_object:
     bucket: artifactory-opinion-stg
     object: /mimir-2.12.0_arm64.rpm
-    dest: "/tmp/{{mimir.rpm}}"
+    dest: "/tmp/{{ mimir_rpm_package }}"
     mode: get
   when: mimir_rpm_install.stat.exists == False and (mimir_rpm_url | default(default_mimir_rpm_url)).startswith('s3')
   tags: installation
@@ -46,7 +46,7 @@
 
 - name: install mimir Repository
   ansible.builtin.package:
-    name: "{{ mimir_rpm_package }}"
+    name: "/tmp/{{ mimir_rpm_package }}"
     state: present
     disable_gpg_check: yes
   tags: installation
