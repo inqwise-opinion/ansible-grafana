@@ -23,6 +23,8 @@ Vagrant.configure("2") do |config|
     cd /vagrant
     aws s3 cp s3://resource-opinion-stg/get-pip.py - | python3
     echo $PWD
+    export VAULT_PASSWORD=#{`op read "op://Security/ansible-vault inqwise-stg/password"`.strip!}
+    echo "$VAULT_PASSWORD" > vault_password
     bash main.sh -r #{AWS_REGION}
   SHELL
 
@@ -37,18 +39,18 @@ Vagrant.configure("2") do |config|
     aws.keypair_name = Etc.getpwuid(Process.uid).name
     override.vm.allowed_synced_folder_types = [:rsync]
     override.vm.synced_folder ".", "/vagrant", type: :rsync, rsync__exclude: ['.git/','ansible-galaxy/'], disabled: false
-    override.vm.synced_folder '../ansible-galaxy', '/vagrant/ansible-galaxy', type: :rsync, rsync__exclude: '.git/', disabled: false
+    override.vm.synced_folder '../ansible-common-collection', '/vagrant/ansible-galaxy', type: :rsync, rsync__exclude: '.git/', disabled: false
     
     aws.region = AWS_REGION
     aws.security_groups = ["sg-0e11a618872a5a387"]
         # public-ssh
-    aws.ami = "ami-0bcfb5f8a3f117a50"
+    aws.ami = "ami-0f30c5fd99995315b"
     aws.instance_type = "r6g.medium"
     aws.subnet_id = "subnet-0f46c97c53ea11e2e"
     aws.associate_public_ip = true
     aws.iam_instance_profile_name = "bootstrap-role"
     aws.tags = {
-      Name: 'grafana-test'
+      Name: "grafana-test-#{Etc.getpwuid(Process.uid).name}"
     }
   end
 end
