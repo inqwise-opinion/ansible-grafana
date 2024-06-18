@@ -1,4 +1,19 @@
 ---
-- include_tasks: grafana.yml
 
+- name: Import grafana GPG public key
+  rpm_key:
+    key: "{{ grafana_gpg_key_url }}"
+    state: present
+  tags: installation
+
+- name: copy grafana.repo
+  ansible.builtin.template:
+    src: grafana.repo.j2
+    dest: /etc/yum.repos.d/grafana.repo
+    owner: bin
+    group: wheel
+    mode: '0644'
+  tags: installation
+  
+- include_tasks: grafana.yml
 - include_tasks: mimir.yml

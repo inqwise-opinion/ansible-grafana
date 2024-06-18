@@ -1,6 +1,9 @@
-default_grafana_gpg_key_url: https://rpm.grafana.com/gpg.key
-mimir_rpm_package: mimir.rpm
-mimir_sha256_rpm_package: mimir-sha256
-config_remote_path: /etc/mimir/config.yml
-default_mimir_rpm_url: https://github.com/grafana/mimir/releases/download/mimir-2.12.0/mimir-2.12.0_arm64.rpm
-default_mimir_sha256_rpm_url: https://github.com/grafana/mimir/releases/download/mimir-2.12.0/mimir-2.12.0_arm64.rpm
+grafana_gpg_key_url: https://rpm.grafana.com/gpg.key
+mimir_config_path: /etc/mimir/config.yml
+mimir_block_storage_base_path: /tmp/mimir
+mimir_user: mimir
+mimir_group: "{{ mimir_user }}"
+mimir_tsdb_folder: tsdb
+mimir_bucket_store_sync_folder: tsdb-sync
+mimir_compactor_folder: compactor
+mimir_ruler_storage_folder: rules

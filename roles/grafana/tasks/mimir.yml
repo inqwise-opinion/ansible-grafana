@@ -1,58 +1,59 @@
 ---
-- name: check mimir RPM exist
-  stat:
-    path: "{{ mimir_rpm_package }}"
-  register: mimir_rpm_install
-  tags: installation
-
-- name: download mimir RPM from http
-  get_url:
-    dest: "/tmp/{{ mimir_rpm_package }}"
-    url: "{{ default_mimir_rpm_url }}"
-    #checksum: sha256:{{ default_mimir_sha256_rpm_url }}
-  when: mimir_rpm_install.stat.exists == False and (mimir_rpm_url | default(default_mimir_rpm_url)).startswith('http')
-  tags: installation
-
-- name: download mimir from s3
-  amazon.aws.s3_object:
-    bucket: artifactory-opinion-stg
-    object: /mimir-2.12.0_arm64.rpm
-    dest: "/tmp/{{ mimir_rpm_package }}"
-    mode: get
-  when: mimir_rpm_install.stat.exists == False and (mimir_rpm_url | default(default_mimir_rpm_url)).startswith('s3')
-  tags: installation
-
-# - name: check mimir_sha256 RPM exist
-#   stat:
-#     path: "{{ mimir_sha256_rpm_package }}"
-#   register: mimir_sha256_rpm_install
-#   tags: installation
-
-# - name: download mimir_sha256 RPM from http
-#   get_url:
-#     dest: "/tmp/{{ mimir_sha256_rpm_package }}"
-#     url: "{{ default_mimir_sha256_rpm_url }}"
-#   when: mimir_sha256_rpm_install.stat.exists == False and (mimir_sha256_rpm_url | default(default_mimir_sha256_rpm_url)).startswith('http')
-#   tags: installation
-
-# - name: download mimir_sha256 from s3
-#   amazon.aws.s3_object:
-#     bucket: artifactory-opinion-stg
-#     object: /mimir-2.12.0_arm64.rpm-sha-256
-#     dest: "/tmp/{{ mimir_sha256_rpm_package }}"
-#     mode: get
-#   when: mimir_sha256_rpm_install.stat.exists == False and (mimir_rpm_url | default(default_mimir_rpm_url)).startswith('s3')
-#   tags: installation
-
-- name: install mimir Repository
+- name: install mimir
   ansible.builtin.package:
-    name: "/tmp/{{ mimir_rpm_package }}"
+    name: mimir
     state: present
-    disable_gpg_check: yes
   tags: installation
+
+- name: ensure block storage base folder exists
+  ansible.builtin.file:
+    path: "{{ mimir_block_storage_base_path }}"
+    state: directory
+    owner: "{{ mimir_user }}"
+    group: "{{ mimir_group }}"
+    mode: '0644'
+    
+- name: ensure tsdb folder exists
+  ansible.builtin.file:
+    path: "{{ mimir_block_storage_base_path }}/{{ mimir_tsdb_folder }}"
+    state: directory
+    owner: "{{ mimir_user }}"
+    group: "{{ mimir_group }}"
+    mode: '0644'
+
+- name: ensure tsdb-sync folder exists
+  ansible.builtin.file:
+    path: "{{ mimir_block_storage_base_path }}/{{ mimir_bucket_store_sync_folder }}"
+    state: directory
+    owner: "{{ mimir_user }}"
+    group: "{{ mimir_group }}"
+    mode: '0644'
+    
+- name: ensure compactor folder exists
+  ansible.builtin.file:
+    path: "{{ mimir_block_storage_base_path }}/{{ mimir_compactor_folder }}"
+    state: directory
+    owner: "{{ mimir_user }}"
+    group: "{{ mimir_group }}"
+    mode: '0644'
+    
+- name: ensure ruler storage folder exists
+  ansible.builtin.file:
+    path: "{{ mimir_block_storage_base_path }}/{{ mimir_ruler_storage_folder }}"
+    state: directory
+    owner: "{{ mimir_user }}"
+    group: "{{ mimir_group }}"
+    mode: '0644'
 
 - name: copy config template to mimir folder
   template:
-    src: config.yml.j2
-    dest: "{{ config_remote_path }}"
+    src: mimir_config.yml.j2
+    dest: "{{ mimir_config_path }}"
   tags: installation
+
+- name: Start and enable mimir
+  systemd:
+    name: mimir
+    state: restarted
+    enabled: yes
+  tags: configuration
