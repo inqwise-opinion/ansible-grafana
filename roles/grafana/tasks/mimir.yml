@@ -11,7 +11,7 @@
     state: directory
     owner: "{{ mimir_user }}"
     group: "{{ mimir_group }}"
-    mode: '0644'
+    mode: 0755
     
 - name: ensure tsdb folder exists
   ansible.builtin.file:
@@ -19,15 +19,15 @@
     state: directory
     owner: "{{ mimir_user }}"
     group: "{{ mimir_group }}"
-    mode: '0644'
+    mode: 0755
 
-- name: ensure tsdb-sync folder exists
+- name: ensure alertmanager folder exists
   ansible.builtin.file:
-    path: "{{ mimir_block_storage_base_path }}/{{ mimir_bucket_store_sync_folder }}"
+    path: "{{ mimir_block_storage_base_path }}/{{ mimir_alertmanager_folder }}"
     state: directory
     owner: "{{ mimir_user }}"
     group: "{{ mimir_group }}"
-    mode: '0644'
+    mode: 0755
     
 - name: ensure compactor folder exists
   ansible.builtin.file:
@@ -35,25 +35,30 @@
     state: directory
     owner: "{{ mimir_user }}"
     group: "{{ mimir_group }}"
-    mode: '0644'
+    mode: 0755
     
-- name: ensure ruler storage folder exists
+- name: ensure ruler folder exists
   ansible.builtin.file:
-    path: "{{ mimir_block_storage_base_path }}/{{ mimir_ruler_storage_folder }}"
+    path: "{{ mimir_block_storage_base_path }}/{{ mimir_ruler_folder }}"
     state: directory
     owner: "{{ mimir_user }}"
     group: "{{ mimir_group }}"
-    mode: '0644'
+    mode: 0755
 
-- name: copy config template to mimir folder
+- name: copy mimir config
   template:
     src: mimir_config.yml.j2
     dest: "{{ mimir_config_path }}"
   tags: installation
+  
+- name: copy alertmanager config
+  template:
+    src: alertmanager-fallback-config.yaml.j2
+    dest: "{{ mimir_alertmanager_config_path }}"
+  tags: installation
 
-- name: Start and enable mimir
+- name: restart mimir service
   systemd:
     name: mimir
     state: restarted
-    enabled: yes
   tags: configuration
