@@ -5,6 +5,12 @@
     state: present
   tags: installation
 
+- name: stop mimir service
+  systemd:
+    name: mimir
+    state: stopped
+  tags: installation
+  
 - name: ensure block storage base folder exists
   ansible.builtin.file:
     path: "{{ mimir_block_storage_base_path }}"
@@ -57,8 +63,8 @@
     dest: "{{ mimir_alertmanager_config_path }}"
   tags: installation
 
-- name: restart mimir service
+- name: start mimir service
   systemd:
     name: mimir
-    state: restarted
+    state: started
   tags: configuration

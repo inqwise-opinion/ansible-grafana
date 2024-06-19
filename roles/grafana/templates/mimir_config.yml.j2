@@ -32,7 +32,9 @@ query_scheduler:
 
 # Use memberlist, a gossip-based protocol, to enable the 3 Mimir replicas to communicate
 memberlist:
-  join_members: [mimir-1, mimir-2, mimir-3]
+  join_members: [ ]
+  advertise_addr: {{ private_ip }}
+  abort_if_cluster_join_fails: false
 
 # Disable the requirement that every request to Mimir has a
 # X-Scope-OrgID header. `anonymous` will be substituted in instead.
