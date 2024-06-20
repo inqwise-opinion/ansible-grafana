@@ -26,7 +26,7 @@ main () {
     export ANSIBLE_ROLES_PATH="$(pwd)/ansible-galaxy/roles"
     ansible-galaxy install -r requirements.yml
     ansible-playbook --connection=local --inventory 127.0.0.1, --limit 127.0.0.1 main.yml --syntax-check
-    ansible-playbook --connection=local --inventory 127.0.0.1, --limit 127.0.0.1 main.yml -e $EXTRA --vault-password-file vault_password
+    ansible-playbook --connection=local --inventory 127.0.0.1, --limit 127.0.0.1 main.yml -e "${EXTRA:-default}" --vault-password-file vault_password
 }
 trap 'catch_error "$ERROR"' ERR
 { ERROR=$(main 2>&1 1>&$out); } {out}>&1

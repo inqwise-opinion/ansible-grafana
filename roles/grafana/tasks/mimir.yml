@@ -63,8 +63,15 @@
     dest: "{{ mimir_alertmanager_config_path }}"
   tags: installation
 
-- name: start mimir service
+- name: reload mimir service
   systemd:
     name: mimir
-    state: started
+    state: reloaded
+  tags: configuration
+  
+- name: restart mimir service
+  systemd:
+    name: mimir
+    state: restarted
+    enabled: yes
   tags: configuration
