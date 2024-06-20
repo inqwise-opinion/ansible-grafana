@@ -1,4 +1,19 @@
 ---
+
+- name: ensure service folder exists
+  ansible.builtin.file:
+    path: "{{ mimir_service_override_path | dirname }}"
+    state: directory
+    mode: 0755
+  tags: installation
+
+- name: copy mimir service
+  template:
+    src: mimir-service-override.conf.j2
+    dest: "{{ mimir_service_override_path }}"
+    mode: 0644
+  tags: installation
+
 - name: install mimir
   ansible.builtin.package:
     name: mimir
@@ -9,6 +24,7 @@
   systemd:
     name: mimir
     state: stopped
+    daemon_reload: true
   tags: installation
   
 - name: ensure block storage base folder exists
@@ -18,6 +34,7 @@
     owner: "{{ mimir_user }}"
     group: "{{ mimir_group }}"
     mode: 0755
+  tags: installation
     
 - name: ensure tsdb folder exists
   ansible.builtin.file:
@@ -26,6 +43,7 @@
     owner: "{{ mimir_user }}"
     group: "{{ mimir_group }}"
     mode: 0755
+  tags: installation
 
 - name: ensure alertmanager folder exists
   ansible.builtin.file:
@@ -34,6 +52,7 @@
     owner: "{{ mimir_user }}"
     group: "{{ mimir_group }}"
     mode: 0755
+  tags: installation
     
 - name: ensure compactor folder exists
   ansible.builtin.file:
@@ -42,6 +61,7 @@
     owner: "{{ mimir_user }}"
     group: "{{ mimir_group }}"
     mode: 0755
+  tags: installation
     
 - name: ensure ruler folder exists
   ansible.builtin.file:
@@ -50,10 +70,11 @@
     owner: "{{ mimir_user }}"
     group: "{{ mimir_group }}"
     mode: 0755
+  tags: installation
 
 - name: copy mimir config
   template:
-    src: mimir_config.yml.j2
+    src: mimir-config.yml.j2
     dest: "{{ mimir_config_path }}"
   tags: installation
   
@@ -62,16 +83,10 @@
     src: alertmanager-fallback-config.yaml.j2
     dest: "{{ mimir_alertmanager_config_path }}"
   tags: installation
-
-- name: reload mimir service
-  systemd:
-    name: mimir
-    state: reloaded
-  tags: configuration
   
-- name: restart mimir service
+- name: start mimir service
   systemd:
     name: mimir
-    state: restarted
+    state: started
     enabled: yes
   tags: configuration

@@ -9,6 +9,7 @@
       value: "{{ private_ip }}"
       private: true
       ttl: 120
+  tags: configuration
 
 - include_role:
     name: grafana

@@ -9,3 +9,4 @@ mimir_bucket_store_sync_folder: tsdb-sync
 mimir_compactor_folder: compactor
 mimir_ruler_folder: rules
 mimir_alertmanager_folder: alertmanager
+mimir_service_override_path: /etc/systemd/system/mimir.service.d/override.conf
