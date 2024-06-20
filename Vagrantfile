@@ -19,13 +19,13 @@
 AWS_REGION = "il-central-1"
 Vagrant.configure("2") do |config|
   config.vm.provision "shell", inline: <<-SHELL
-    
+    set -euxo pipefail
     cd /vagrant
     aws s3 cp s3://resource-opinion-stg/get-pip.py - | python3
     echo $PWD
     export VAULT_PASSWORD=#{`op read "op://Security/ansible-vault inqwise-stg/password"`.strip!}
     echo "$VAULT_PASSWORD" > vault_password
-    bash main.sh -r #{AWS_REGION}
+    bash main.sh -e "discord_message_owner_name=#{Etc.getpwuid(Process.uid).name}" -r #{AWS_REGION}
   SHELL
 
   config.vm.provider :aws do |aws, override|
