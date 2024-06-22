@@ -13,3 +13,4 @@
 
 - include_role:
     name: grafana
+  tags: grafana
