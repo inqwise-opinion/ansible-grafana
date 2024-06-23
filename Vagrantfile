@@ -15,7 +15,7 @@
 #     ansible.galaxy_role_file = "requirements.yml"
 
 #   end
-  
+
 AWS_REGION = "il-central-1"
 Vagrant.configure("2") do |config|
   config.vm.provision "shell", inline: <<-SHELL
@@ -26,7 +26,7 @@ Vagrant.configure("2") do |config|
     export VAULT_PASSWORD=#{`op read "op://Security/ansible-vault inqwise-stg/password"`.strip!}
     echo "$VAULT_PASSWORD" > vault_password
     export ANSIBLE_VERBOSITY=0
-    bash main.sh -e "discord_message_owner_name=#{Etc.getpwuid(Process.uid).name} aws_iam_role=grafana-role" -r #{AWS_REGION}
+    bash main.sh -e "discord_message_owner_name=#{Etc.getpwuid(Process.uid).name} aws_iam_role=grafana-role" -r "#{AWS_REGION}"
   SHELL
 
   config.vm.provider :aws do |aws, override|
