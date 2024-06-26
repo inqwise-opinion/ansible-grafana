@@ -1,8 +1,12 @@
 users_groups:
   - name: "{{ grafana_group }}"
 users:
+
   - name: "{{ grafana_user }}"
     group: "{{ grafana_group }}"
+    append: yes
+  - name: alloy 
+    group: systemd-journal
     append: yes
   - name: glassfox
     cron_allow: yes
