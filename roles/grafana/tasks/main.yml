@@ -7,8 +7,8 @@
   tags: installation
 
 - name: copy grafana.repo
-  ansible.builtin.template:
-    src: grafana.repo.j2
+  ansible.builtin.copy:
+    src: grafana.repo
     dest: /etc/yum.repos.d/grafana.repo
     owner: bin
     group: wheel
