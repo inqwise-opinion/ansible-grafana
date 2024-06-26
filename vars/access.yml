@@ -1,8 +1,8 @@
 users_groups:
-  - name: "{{ mysql_group }}"
+  - name: "{{ grafana_group }}"
 users:
-  - name: "{{ mysql_user }}"
-    group: "{{ mysql_group }}"
+  - name: "{{ grafana_user }}"
+    group: "{{ grafana_group }}"
     append: yes
   - name: glassfox
     cron_allow: yes

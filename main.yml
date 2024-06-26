@@ -23,7 +23,7 @@
         dir: vars/main
         files_matching: "{{ private_domain }}.yml"
 
-    - name: include aws credentials vars
+    - name: include credentials vars
       include_vars:
         dir: vars/credentials
         files_matching: "{{ private_domain }}.yml"
