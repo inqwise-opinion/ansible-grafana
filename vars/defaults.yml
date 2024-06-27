@@ -6,3 +6,5 @@ private_domain: opinion-stg.local
 grafana_user: "grafana"
 grafana_group: "{{ grafana_user }}"
 private_ip: "{{ ansible_default_ipv4['address'] }}"
+mimir_memberlist_join_members:
+  - "{{ mimir_memberlist_join_member }}"
