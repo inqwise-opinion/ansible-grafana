@@ -25,6 +25,8 @@
     name: alloy
   tags: alloy
   vars:
+    alloy_user_groups:
+      - systemd-journal
     env_file_vars:
       CUSTOM_ARGS: "--server.http.listen-addr=0.0.0.0:12345"
     config: |
@@ -39,19 +41,12 @@
 
         rule {
           source_labels = ["__journal__systemd_unit"]
+          regex         = "(mimir.service|telegraf.service)"
+          action        = "keep"
+        }
+        rule {
+          source_labels = ["__journal__systemd_unit"]
           target_label  = "unit"
-        }
-        rule {
-          source_labels = ["__journal__boot_id"]
-          target_label  = "boot_id"
-        }
-        rule {
-          source_labels = ["__journal__transport"]
-          target_label  = "transport"
-        }
-        rule {
-          source_labels = ["__journal_priority_keyword"]
-          target_label  = "level"
         }
         rule {
           source_labels = ["__journal__hostname"]
@@ -65,6 +60,7 @@
         ]
         relabel_rules = loki.relabel.journal.rules
         labels = {
-          "job" = "integrations/node_exporter",
+          "job" = "integrations/node_exporter"
+          "app" = "grafana",
         }
       }
