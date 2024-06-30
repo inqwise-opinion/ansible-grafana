@@ -60,7 +60,7 @@
         ]
         relabel_rules = loki.relabel.journal.rules
         labels = {
-          "job" = "integrations/node_exporter"
+          "job" = "integrations/node_exporter",
           "app" = "grafana",
         }
       }
