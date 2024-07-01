@@ -2,9 +2,6 @@
   hosts: all
   become: yes  # Use sudo to execute tasks
       
-  vars:
-    - discord_message_environment: "{{ environment_name }}"
-
   vars_files:
     - defaults.yml
 

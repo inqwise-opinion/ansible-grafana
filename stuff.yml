@@ -28,11 +28,11 @@
     alloy_user_groups:
       - systemd-journal
     env_file_vars:
-      CUSTOM_ARGS: "--server.http.listen-addr=0.0.0.0:12345"
+      CUSTOM_ARGS: "--server.http.listen-addr=0.0.0.0:12345 --disable-reporting=true --stability.level=public-preview"
     config: |
       loki.write "local" {
         endpoint {
-          url = "http://loki.opinion-stg.local:3100/loki/api/v1/push"
+          url = "{{ loki_base_url }}/loki/api/v1/push"
         }
       }
 
@@ -61,6 +61,6 @@
         relabel_rules = loki.relabel.journal.rules
         labels = {
           "job" = "integrations/node_exporter",
-          "app" = "grafana",
+          "app" = "mimir",
         }
       }
