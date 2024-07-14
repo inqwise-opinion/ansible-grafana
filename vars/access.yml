@@ -1,10 +1,10 @@
 users_groups:
-  - name: "{{ grafana_group }}"
+  - name: "{{ app_group }}"
  # - name: alloy
 users:
 
-  - name: "{{ grafana_user }}"
-    group: "{{ grafana_group }}"
+  - name: "{{ app_user }}"
+    group: "{{ app_group }}"
     append: yes
   - name: glassfox
     cron_allow: yes

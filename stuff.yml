@@ -14,11 +14,6 @@
 - include_role:
     name: grafana
   tags: grafana
-  vars:
-    mimir_memberlist:
-      join_members: "{{ mimir_memberlist_join_members }}"
-      advertise_addr: "{{ private_ip }}"
-      abort_if_cluster_join_fails: false
 
 - name: Install Alloy
   include_role:

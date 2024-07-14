@@ -3,8 +3,5 @@ discord_webhook: https://discord.com/api/webhooks/{{ discord_message_webhook_id 
 discord_channel: "#notifications"
 private_dns: grafana
 private_domain: opinion-stg.local
-grafana_user: "grafana"
-grafana_group: "{{ grafana_user }}"
+app_user: grafana
 private_ip: "{{ ansible_default_ipv4['address'] }}"
-mimir_memberlist_join_members:
-  - "{{ mimir_memberlist_join_member }}"

@@ -15,5 +15,15 @@
     mode: '0644'
   tags: installation
   
-- include_tasks: grafana.yml
-- include_tasks: mimir.yml
+- name: install grafana
+  ansible.builtin.package:
+    name: grafana
+    state: present
+  tags: installation
+
+- name: start and enable grafana
+  systemd:
+    name: grafana-server
+    state: started
+    enabled: yes
+  tags: configuration
