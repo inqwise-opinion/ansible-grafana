@@ -57,7 +57,8 @@ Vagrant.configure("2") do |config|
         aws.associate_public_ip = true
         aws.iam_instance_profile_name = "bootstrap-role"
         aws.tags = {
-          Name: "grafana-test#{i}-#{Etc.getpwuid(Process.uid).name}"
+          Name: "grafana-test#{i}-#{Etc.getpwuid(Process.uid).name}",
+          private_dns: "grafana-test-#{Etc.getpwuid(Process.uid).name}"
         }
       end
     end

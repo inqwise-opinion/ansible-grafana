@@ -11,9 +11,19 @@
       ttl: 120
   tags: configuration
 
-- include_role:
-    name: grafana
-  tags: grafana
+- ansible.builtin.import_role:
+    name: grafana.grafana.grafana
+  vars:
+    grafana_alerting: {}
+    grafana_security:
+      admin_user: admin
+      admin_password: admin
+      grafana_data_dir: /data/lib
+    
+
+#- include_role:
+#    name: grafana
+#  tags: grafana
 
 - name: Install Alloy
   include_role:

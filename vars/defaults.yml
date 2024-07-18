@@ -4,4 +4,15 @@ discord_channel: "#notifications"
 private_dns: grafana
 private_domain: opinion-stg.local
 app_user: grafana
+app_group: "{{ app_user }}"
 private_ip: "{{ ansible_default_ipv4['address'] }}"
+disk:
+    name: /dev/sdb
+    mount_options: defaults,noatime
+    mount: /data
+    size: 100 
+    fstype: ext4
+    data_folder: lib
+    user: "{{ app_user }}"
+    group: "{{ app_group }}"
+    kms_key_id: "{{ disk_kms_key_id }}"
