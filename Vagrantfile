@@ -8,17 +8,8 @@
 # vagrant up --provider=aws
 # vagrant destroy -f && vagrant up --provider=aws
 
-# Vagrant.configure("2") do |config|
-#   config.vm.provision "ansible_local" do |ansible|
-#     ansible.playbook = "main.yml"
-#     ansible.install_mode = "pip"
-#     ansible.pip_install_cmd = "curl https://bootstrap.pypa.io/get-pip.py | sudo python3"
-#     ansible.pip_args = "-r /vagrant/requirements.txt"
-#     ansible.galaxy_roles_path = "/vagrant/ansible-galaxy/roles"
-#     ansible.galaxy_role_file = "requirements.yml"
-
-#   end
-
+TOPIC_NAME = "errors"
+ACCOUNT_ID = "992382682634"
 AWS_REGION = "il-central-1"
 NODE_COUNT = 1
 Vagrant.configure("2") do |config|
@@ -32,7 +23,8 @@ Vagrant.configure("2") do |config|
         export VAULT_PASSWORD=#{`op read "op://Security/ansible-vault inqwise-stg/password"`.strip!}
         echo "$VAULT_PASSWORD" > vault_password
         export ANSIBLE_VERBOSITY=0
-        bash main.sh -e "discord_message_owner_name=#{Etc.getpwuid(Process.uid).name} aws_iam_role=grafana-role" -r "#{AWS_REGION}"
+        curl -s https://raw.githubusercontent.com/inqwise/ansible-automation-toolkit/master/main_amzn2023.sh | bash -s -- -r #{AWS_REGION} -e "playbook_name=mysql-test discord_message_owner_name=#{Etc.getpwuid(Process.uid).name} aws_iam_role=grafana-role" --topic-name #{TOPIC_NAME} --account-id #{ACCOUNT_ID}
+        rm vault_password
       SHELL
 
       subconfig.vm.provider :aws do |aws, override|
@@ -41,13 +33,12 @@ Vagrant.configure("2") do |config|
         override.ssh.private_key_path = "~/.ssh/id_rsa"
         aws.access_key_id             = `op read "op://Employee/aws inqwise-stg/Security/Access key ID"`.strip!
         aws.secret_access_key         = `op read "op://Employee/aws inqwise-stg/Security/Secret access key"`.strip!
-        #aws.session_token             = ENV["VAGRANT_AWS_SESSION_TOKEN"]
-        #aws.aws_dir = ENV['HOME'] + "/.aws/"
         aws.keypair_name = Etc.getpwuid(Process.uid).name
         override.vm.allowed_synced_folder_types = [:rsync]
         override.vm.synced_folder ".", "/vagrant", type: :rsync, rsync__exclude: ['.git/','ansible-galaxy/'], disabled: false
-        override.vm.synced_folder '../ansible-common-collection', '/vagrant/ansible-galaxy', type: :rsync, rsync__exclude: '.git/', disabled: false
-        
+        collection_path = ENV['COMMON_COLLECTION_PATH'] || '~/git/ansible-common-collection'
+        override.vm.synced_folder collection_path, '/vagrant/ansible-galaxy', type: :rsync, rsync__exclude: '.git/', disabled: false    
+            
         aws.region = AWS_REGION
         aws.security_groups = ["sg-0e11a618872a5a387","sg-0ff15e7ac38d283c1"]
             # public-ssh, grafana

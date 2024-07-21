@@ -1,7 +1,0 @@
----
-roles:
-  - name: users
-    src: robertdebock.users
-collections:
-  - name: grafana.grafana
-    src: https://codeload.github.com/grafana/grafana-ansible-collection/tar.gz/refs/tags/5.3.0
