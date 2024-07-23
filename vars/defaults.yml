@@ -5,6 +5,12 @@ private_dns: grafana
 private_domain: opinion-stg.local
 app_user: grafana
 app_group: "{{ app_user }}"
+users_groups:
+  - name: "{{ app_group }}"
+users:
+  - name: "{{ app_user }}"
+    group: "{{ app_group }}"
+    append: yes
 private_ip: "{{ ansible_default_ipv4['address'] }}"
 disk:
     name: /dev/sdb
