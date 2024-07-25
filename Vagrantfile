@@ -5,6 +5,7 @@
 # vagrant plugin install vagrant-aws-mkubenka --plugin-version "0.7.2.pre.24"
 # classic:
 # vagrant plugin install vagrant-aws 
+# export COMMON_COLLECTION_PATH='~/git/inqwise/ansible/ansible-common-collection'
 # vagrant up --provider=aws
 # vagrant destroy -f && vagrant up --provider=aws
 

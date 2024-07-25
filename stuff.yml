@@ -14,11 +14,12 @@
 - ansible.builtin.import_role:
     name: grafana.grafana.grafana
   vars:
+    grafana_data_dir: /data/lib
     grafana_alerting: {}
     grafana_security:
       admin_user: admin
       admin_password: admin
-      grafana_data_dir: /data/lib
+    
     
 
 #- include_role:
