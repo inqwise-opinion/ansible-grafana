@@ -24,7 +24,7 @@ Vagrant.configure("2") do |config|
         export VAULT_PASSWORD=#{`op read "op://Security/ansible-vault inqwise-stg/password"`.strip!}
         echo "$VAULT_PASSWORD" > vault_password
         export ANSIBLE_VERBOSITY=0
-        curl -s https://raw.githubusercontent.com/inqwise/ansible-automation-toolkit/master/main_amzn2023.sh | bash -s -- -r #{AWS_REGION} -e "playbook_name=mysql-test discord_message_owner_name=#{Etc.getpwuid(Process.uid).name} aws_iam_role=grafana-role" --topic-name #{TOPIC_NAME} --account-id #{ACCOUNT_ID}
+        curl -s https://raw.githubusercontent.com/inqwise/ansible-automation-toolkit/master/main_amzn2023.sh | bash -s -- -r #{AWS_REGION} -e "playbook_name=grafana-test discord_message_owner_name=#{Etc.getpwuid(Process.uid).name} aws_iam_role=grafana-role" --topic-name #{TOPIC_NAME} --account-id #{ACCOUNT_ID}
         rm vault_password
       SHELL
 
