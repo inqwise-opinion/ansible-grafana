@@ -67,9 +67,9 @@ Vagrant.configure("2") do |config|
         aws.tags = {
           Name: "grafana-test#{i}-#{Etc.getpwuid(Process.uid).name}",
           private_dns: "grafana-test-#{Etc.getpwuid(Process.uid).name}",
-	  playbookname: "ansible-grafana",
-	  version: "latest",
-	  app: "grafana",
+	        playbookname: "ansible-grafana",
+	        version: "latest",
+	        app: "grafana"
         }
       end
     end

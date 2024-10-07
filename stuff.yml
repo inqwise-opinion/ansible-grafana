@@ -9,6 +9,7 @@
       value: "{{ private_ip }}"
       private: true
       ttl: 120
+    skip_extend_os_family: true
   tags: configuration
 
 - ansible.builtin.import_role:
@@ -19,6 +20,12 @@
     grafana_security:
       admin_user: admin
       admin_password: admin
+    grafana_datasources:
+    - name: loki
+      type: loki
+      access: proxy
+      url: "{{ loki_base_url }}"
+      basicAuth: false
 
 - name: Install Alloy
   include_role:
@@ -41,7 +48,7 @@
 
         rule {
           source_labels = ["__journal__systemd_unit"]
-          regex         = "(mimir.service|telegraf.service)"
+          regex         = "(grafana.service|telegraf.service)"
           action        = "keep"
         }
         rule {
@@ -61,6 +68,6 @@
         relabel_rules = loki.relabel.journal.rules
         labels = {
           "job" = "integrations/node_exporter",
-          "app" = "mimir",
+          "app" = "grafana",
         }
       }
