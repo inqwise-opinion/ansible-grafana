@@ -8,12 +8,15 @@
       type: A
       value: "{{ private_ip }}"
       private: true
-      ttl: 120
+      ttl: 60
     skip_extend_os_family: true
   tags: configuration
 
-- ansible.builtin.import_role:
+- ansible.builtin.include_role:
     name: grafana.grafana.grafana
+    apply:
+      tags: installation
+  tags: installation
   vars:
     grafana_data_dir: /data/lib
     grafana_alerting: {}
@@ -30,7 +33,6 @@
 - name: Install Alloy
   include_role:
     name: alloy
-  tags: always
   vars:
     alloy_user_groups:
       - systemd-journal
@@ -71,3 +73,4 @@
           "app" = "grafana",
         }
       }
+  tags: always
