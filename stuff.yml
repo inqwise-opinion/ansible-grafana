@@ -15,14 +15,14 @@
 - ansible.builtin.include_role:
     name: grafana.grafana.grafana
     apply:
-      tags: installation
-  tags: installation
+      tags: [installation,configuration]
+  tags: [installation,configuration]
   vars:
     grafana_data_dir: /data/lib
     grafana_alerting: {}
     grafana_security:
-      admin_user: admin
-      admin_password: admin
+      admin_user: "admin"
+      admin_password: "admin"
     grafana_datasources:
     - name: loki
       type: loki
