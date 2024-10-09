@@ -12,7 +12,6 @@ users:
     group: "{{ app_group }}"
     append: true
     create_home: false
-    system: true
     shell: /sbin/nologin
 
 private_ip: "{{ ansible_default_ipv4.address }}"
