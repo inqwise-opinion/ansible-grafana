@@ -1,5 +1,8 @@
 # vagrant up --provider=aws
 # vagrant destroy -f && vagrant up --provider=aws
+## optional:
+# export COMMON_COLLECTION_PATH='~/git/inqwise/ansible/ansible-common-collection'
+# export STACKTREK_COLLECTION_PATH='~/git/inqwise/ansible/ansible-stack-trek'
 
 MAIN_SCRIPT_URL = "https://raw.githubusercontent.com/inqwise/ansible-automation-toolkit/default/main_amzn2023.sh"
 TOPIC_NAME = "errors"
@@ -7,23 +10,12 @@ ACCOUNT_ID = "992382682634"
 AWS_REGION = "il-central-1"
 NODE_COUNT = 1
 MAIN_SH_ARGS = <<MARKER
--e "playbook_name=ansible-grafana discord_message_owner_name=#{Etc.getpwuid(Process.uid).name}" --tags "installation,configuration"
+-e "playbook_name=ansible-grafana discord_message_owner_name=#{Etc.getpwuid(Process.uid).name} environment_id=opinion-stg.local" --tags "installation,configuration,debug"
 MARKER
 Vagrant.configure("2") do |config|
   (1..NODE_COUNT).each do |i|
     config.vm.define "node#{i}" do |subconfig|
       subconfig.vm.provision "shell", inline: <<-SHELL
-        # set -euxo pipefail
-        # echo "start vagrant file"
-        # source /deployment/ansibleenv/bin/activate
-        # cd /deployment/playbook
-        # export ANSIBLE_VERBOSITY=0
-        # export ANSIBLE_DISPLAY_SKIPPED_HOSTS=false
-        # export VAULT_PASSWORD=#{`op read "op://Security/ansible-vault inqwise-opinion-stg/password"`.strip!}
-        # echo "$VAULT_PASSWORD" > vault_password
-        # bash main.sh #{MAIN_SH_ARGS}
-        # rm vault_password
-
         set -euxo pipefail
         echo "start vagrant file"
         python3 -m venv /tmp/ansibleenv
@@ -51,15 +43,13 @@ Vagrant.configure("2") do |config|
         aws.keypair_name = Etc.getpwuid(Process.uid).name
         override.vm.allowed_synced_folder_types = [:rsync]
         override.vm.synced_folder ".", "/vagrant", type: :rsync, rsync__exclude: ['.git/','inqwise/'], disabled: false
-        #common_collection_path = ENV['COMMON_COLLECTION_PATH'] || '~/git/ansible-common-collection'
-        #stacktrek_collection_path = ENV['STACKTREK_COLLECTION_PATH'] || '~/git/ansible-stack-trek'
-        #override.vm.synced_folder common_collection_path, '/vagrant/collections/ansible_collections/inqwise/common', type: :rsync, rsync__exclude: '.git/', disabled: false
-        #override.vm.synced_folder stacktrek_collection_path, '/vagrant/collections/ansible_collections/inqwise/stacktrek', type: :rsync, rsync__exclude: '.git/', disabled: false            
+        common_collection_path = ENV['COMMON_COLLECTION_PATH'] || '~/git/ansible-common-collection'
+        override.vm.synced_folder common_collection_path, '/vagrant/collections/ansible_collections/inqwise/common', type: :rsync, rsync__exclude: '.git/', disabled: false
     
         aws.region = AWS_REGION
         aws.security_groups = ["sg-020afd8fd0fa9fd0b","sg-0ff15e7ac38d283c1"]
             # public-ssh, grafana
-        aws.ami = "ami-0b864da052af97955"
+        aws.ami = "ami-01167ec150ba33b9c"
         aws.instance_type = "t4g.small"
         aws.subnet_id = "subnet-0f46c97c53ea11e2e"
         aws.associate_public_ip = true
