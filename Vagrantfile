@@ -1,8 +1,5 @@
 # vagrant up --provider=aws
 # vagrant destroy -f && vagrant up --provider=aws
-## optional:
-# export COMMON_COLLECTION_PATH='~/git/inqwise/ansible/ansible-common-collection'
-# export STACKTREK_COLLECTION_PATH='~/git/inqwise/ansible/ansible-stack-trek'
 
 MAIN_SCRIPT_URL = "https://raw.githubusercontent.com/inqwise/ansible-automation-toolkit/default/main_amzn2023.sh"
 TOPIC_NAME = "errors"
@@ -43,8 +40,10 @@ Vagrant.configure("2") do |config|
         aws.keypair_name = Etc.getpwuid(Process.uid).name
         override.vm.allowed_synced_folder_types = [:rsync]
         override.vm.synced_folder ".", "/vagrant", type: :rsync, rsync__exclude: ['.git/','inqwise/'], disabled: false
-        common_collection_path = ENV['COMMON_COLLECTION_PATH'] || '~/git/ansible-common-collection'
-        override.vm.synced_folder common_collection_path, '/vagrant/collections/ansible_collections/inqwise/common', type: :rsync, rsync__exclude: '.git/', disabled: false
+        #common_collection_path = ENV['COMMON_COLLECTION_PATH'] || '~/git/ansible-common-collection'
+        #stacktrek_collection_path = ENV['STACKTREK_COLLECTION_PATH'] || '~/git/ansible-stack-trek'
+        #override.vm.synced_folder common_collection_path, '/vagrant/collections/ansible_collections/inqwise/common', type: :rsync, rsync__exclude: '.git/', disabled: false
+        #override.vm.synced_folder stacktrek_collection_path, '/vagrant/collections/ansible_collections/inqwise/stacktrek', type: :rsync, rsync__exclude: '.git/', disabled: false            
     
         aws.region = AWS_REGION
         aws.security_groups = ["sg-020afd8fd0fa9fd0b","sg-0ff15e7ac38d283c1"]
@@ -59,7 +58,8 @@ Vagrant.configure("2") do |config|
           private_dns: "grafana-test-#{Etc.getpwuid(Process.uid).name}",
 	        playbookname: "ansible-grafana",
 	        version: "latest",
-	        app: "grafana"
+	        app: "grafana",
+          grafana_admin_password: ".6!@nh@8gz9pcL@8LdZt"
         }
       end
     end
