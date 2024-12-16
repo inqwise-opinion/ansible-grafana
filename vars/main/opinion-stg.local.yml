@@ -1,3 +1,3 @@
 environment_name: opinion-stg
 private_domain: opinion-stg.local
-internal_base_url: https://internal-opinion-stg.s3.amazonaws.com
+internal_base_url: https://internal-opinion-stg.s3.il-central-1.amazonaws.com

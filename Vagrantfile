@@ -30,7 +30,7 @@ Vagrant.configure("2") do |config|
         rm vault_password
       SHELL
 
-      config.vm.provider :aws do |aws, override|
+      subconfig.vm.provider :aws do |aws, override|
         override.vm.box = "dummy"
         override.ssh.username = "ec2-user"
         override.ssh.private_key_path = "~/.ssh/id_rsa"
@@ -48,8 +48,8 @@ Vagrant.configure("2") do |config|
         aws.region = AWS_REGION
         aws.security_groups = ["sg-020afd8fd0fa9fd0b","sg-0ff15e7ac38d283c1"]
             # public-ssh, grafana
-        aws.ami = "ami-01167ec150ba33b9c"
-        aws.instance_type = "t4g.small"
+        aws.ami = "ami-00497dc7671d50463"
+        aws.instance_type = "t4g.medium"
         aws.subnet_id = "subnet-0f46c97c53ea11e2e"
         aws.associate_public_ip = true
         aws.iam_instance_profile_name = "bootstrap-role"
