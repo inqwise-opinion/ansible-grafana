@@ -31,6 +31,10 @@
       access: proxy
       url: "{{ loki_base_url }}"
       basicAuth: false
+    - name: Prometheus
+      type: prometheus
+      access: proxy
+      url: http://mimir.{{ private_domain }}.local:8080/prometheus
 
 - name: Install Alloy
   include_role:
